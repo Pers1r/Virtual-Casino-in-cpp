@@ -45,7 +45,7 @@ int main() {
     float fontSize = GlobalConfig::FONT_SIZE; // Deklarujemy tylko raz!
 
     ImFont* customFont = io.Fonts->AddFontFromFileTTF(GlobalConfig::FONT_PATH.c_str(), fontSize);
-    
+
     if (customFont != nullptr) {
         (void)ImGui::SFML::UpdateFontTexture();
     } else {
@@ -54,7 +54,7 @@ int main() {
 
 
     // Inicjalizacja gracza (wczytuje dane w konstruktorze)
-    Player player(500); 
+    Player player(500);
     TokenManager tokenManager(10);
     SlotMachine slots;
     if (!slots.load(GlobalConfig::ASSETS_PATH)) {
@@ -104,8 +104,8 @@ int main() {
             ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Always);
             ImGui::Begin("Portfel Gracza", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::Text("Stan konta: %d $", player.getCash());
-            
-            // Czy my w ogóle mamy pieniądze 
+
+            // Czy my w ogóle mamy pieniądze
             if (player.isBankrupt()) {
                 ImGui::Separator();
                 if (ImGui::Button("WEZ POZYCZKE (+200$)")) {
@@ -122,8 +122,8 @@ int main() {
                 ImGui::SetNextWindowPos(ImVec2(200, 150), ImGuiCond_FirstUseEver);
                 ImGui::SetNextWindowSize(ImVec2(400, 320), ImGuiCond_FirstUseEver);
                 ImGui::Begin("VCasino - Menu Glowne", nullptr, ImGuiWindowFlags_NoCollapse);
-                
-                ImGui::Text("%s", 
+
+                ImGui::Text("%s",
                     "============================================\n"
                     "|| ~~ || WITAJ W WIRTUALNYM KASYNIE || ~~ ||\n"
                     "============================================"
@@ -131,7 +131,7 @@ int main() {
                 ImGui::Spacing();
                 ImGui::Separator();
                 ImGui::Spacing();
-                // TODO 
+                // TODO
                 if (ImGui::Button("TEST GAME", ImVec2(-1, 40))) {
                     currentStatus = GameStatus::DEBUG;
                 }
@@ -148,7 +148,7 @@ int main() {
                 if (ImGui::Button("Wyjscie", ImVec2(-1, 40))) {
                     window.close();
                 }
-                
+
                 ImGui::End();
                 break;
             }
@@ -174,11 +174,11 @@ int main() {
 
             // === TEST_GAME
             case GameStatus::DEBUG: {
-               
+
                 // Nowe okno
                 ImGui::SetNextWindowPos(ImVec2(200, 100), ImGuiCond_FirstUseEver);
                 ImGui::SetNextWindowSize(ImVec2(580, 450), ImGuiCond_FirstUseEver);
-               
+
                 // Tytuł
                 ImGui::Begin("Przykladowa Gra", nullptr, ImGuiWindowFlags_NoCollapse);
 
@@ -188,11 +188,11 @@ int main() {
                 for (int chipValue : tokenManager.getAvailableTokens())
                 {
                     std::string label = std::to_string(chipValue) + "$";
-                   
+
                     if (tokenManager.getSelectedToken() == chipValue) {
                         label += "<==[Wybrales]";
                     }
-                    
+
                     if (ImGui::Button(label.c_str(), ImVec2(150, 40))) {
                         tokenManager.setSelectedToken(chipValue);
                     }

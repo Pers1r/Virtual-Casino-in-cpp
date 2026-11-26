@@ -25,8 +25,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SFML)
 
 add_executable(
-        VCasino 
-        
+        VCasino
+
         src/main.cpp
         src/player.cpp
         #src/token.cpp
