@@ -6,8 +6,11 @@ set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-#file(COPY plansza.txt DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-#file(COPY Roboto-Light.ttf broom.png circle.png square.png window.png DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+# Font
+file(COPY Nunito-VariableFont_wght.ttf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -21,7 +24,16 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SFML)
 
-add_executable(VCasino src/main.cpp
+add_executable(
+        VCasino
+
+        src/main.cpp
+        src/player.cpp
+        #src/token.cpp
+        src/tokenManager.cpp
+        src/slotMachine.cpp
+
+        # imgui
         imgui/imgui-SFML.cpp
         imgui/imgui.cpp
         imgui/imgui_draw.cpp
