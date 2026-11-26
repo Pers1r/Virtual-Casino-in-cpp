@@ -1,6 +1,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <imgui.h>
+#include <../imgui/imgui.h>
 #include <imgui-SFML.h>
 #include <random>
 #include <iostream>
@@ -10,6 +10,7 @@
 #include "player.h"
 #include "gameStatus.h"
 #include "tokenManager.h"
+#include "slotMachine.h"
 
 // Theme puki co czarno-biały
 void ApplyTheme() {
@@ -55,6 +56,10 @@ int main() {
     // Inicjalizacja gracza (wczytuje dane w konstruktorze)
     Player player(500); 
     TokenManager tokenManager(10);
+    SlotMachine slots;
+    if (!slots.load(GlobalConfig::ASSETS_PATH)) {
+        std::cerr << "Sloty: brak assetow w katalogu " << GlobalConfig::ASSETS_PATH << std::endl;
+    }
     GameStatus currentStatus = GameStatus::MAIN_MENU;
     sf::Clock deltaClock;
 
@@ -72,6 +77,14 @@ int main() {
                 window.close();
             }
 
+            // Klik w dzwignie automatu
+            if (const auto* mb = event->getIf<sf::Event::MouseButtonPressed>()) {
+                if (mb->button == sf::Mouse::Button::Left && currentStatus == GameStatus::GAME_2
+                    && !ImGui::GetIO().WantCaptureMouse) {
+                    slots.handleClick(window.mapPixelToCoords(mb->position), player, tokenManager.getSelectedToken());
+                    }
+            }
+
             // ESC - powrót do menu głównego z poziomu gry
             if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
                 if (key->code == sf::Keyboard::Key::Escape) {
@@ -82,7 +95,9 @@ int main() {
             }
         }
 
-        ImGui::SFML::Update(window, deltaClock.restart());
+        sf::Time dt = deltaClock.restart();
+        ImGui::SFML::Update(window, dt);
+        slots.update(dt, player);
 
         // Pieniądze - w grach u góry
         if (currentStatus != GameStatus::MAIN_MENU) {
@@ -150,11 +165,10 @@ int main() {
 
             // === GAME_2
             case GameStatus::GAME_2: {
-                ImGui::SetNextWindowPos(ImVec2(110, 80), ImGuiCond_FirstUseEver);
-                ImGui::SetNextWindowSize(ImVec2(580, 450), ImGuiCond_FirstUseEver);
-                ImGui::Begin("GAME_2", nullptr, ImGuiWindowFlags_NoCollapse);
-                // ?
-                ImGui::End();
+                // Gra rysowana w calym oknie (SFML) + nakladka ImGui bez ramki
+                if (slots.drawUI(player, tokenManager)) {
+                    currentStatus = GameStatus::MAIN_MENU;
+                }
                 break;
             }
 
@@ -219,6 +233,9 @@ int main() {
 
         // Czarne tło
         window.clear(sf::Color(15, 15, 15));
+        if (currentStatus == GameStatus::GAME_2) {
+            slots.draw(window);
+        }
         ImGui::SFML::Render(window);
         window.display();
     }

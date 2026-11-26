@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Font
 file(COPY Nunito-VariableFont_wght.ttf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -29,6 +31,7 @@ add_executable(
         src/player.cpp
         #src/token.cpp
         src/tokenManager.cpp
+        src/slotMachine.cpp
 
         # imgui
         imgui/imgui-SFML.cpp
